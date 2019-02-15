@@ -1,11 +1,11 @@
 package io.azmain.moviecatalogservice.resource;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +18,13 @@ import io.azmain.moviecatalogservice.models.Rating;
 @RestController
 @RequestMapping("/catalog")
 public class MovieCatalogResource {
+	
+	/*
+	 * It tells inject me RestTemplate from where it's been declared Autowire is a
+	 * consumer, Bean is a producer
+	 */
+	@Autowired
+	private RestTemplate restTemplate;
 
 	@RequestMapping("/{userId}")
 	public List<CatalogItem> getCatalog(@PathVariable("userId") String userId){
@@ -31,9 +38,12 @@ public class MovieCatalogResource {
 		 */
 		
 		
+		/*
+		 * If we write like this below it will create an instance every time the api gets
+		 * called, rather we can auto wired this
+		 */
 		
-		
-		RestTemplate restTemplate = new RestTemplate(); // it is for calling web api programmatically
+		//RestTemplate restTemplate = new RestTemplate(); // it is for calling web api programmatically
 		
 		List<Rating> ratings = Arrays.asList(
 					new Rating("1234",8),
@@ -50,6 +60,7 @@ public class MovieCatalogResource {
 			return new CatalogItem(movie.getMovieName(), "description", rating.getRating());
 		})
 		.collect(Collectors.toList());
+		
 		
 		/*
 		 * return Collections.singletonList( new CatalogItem("3 Idiots", "Educational",
