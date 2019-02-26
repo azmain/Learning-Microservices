@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.azmain.moviecatalogservice.models.UserRating;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,25 +50,24 @@ public class MovieCatalogResource {
 		
 		//RestTemplate restTemplate = new RestTemplate(); // it is for calling web api programmatically
 		
-		List<Rating> ratings = Arrays.asList(
-					new Rating("1234",8),
-					new Rating("5678",7)
-				);
+		UserRating ratings = restTemplate.getForObject("http://localhost:8083/ratingsdata/users/"+userId,UserRating.class);
+
 		
-		return ratings.stream().map(rating -> {
+		return ratings.getUserRating().stream().map(rating -> {
 			/*
 			 * It calls the api end point & get an string response which then converts to an
 			 * object with the given class
 			 * This call is synchronous but there's way to make these calls asynchronous
 			 */
-			//Movie movie = restTemplate.getForObject("http://localhost:8082/movie/nishan", Movie.class);
+			Movie movie = restTemplate.getForObject("http://localhost:8082/movie/"+userId, Movie.class);
 
+			/*Web Client Builder Way
 			Movie movie = webClientBuilder.build()
 					.get()
 					.uri("http://localhost:8082/movie/"+rating.getMovieId())
 					.retrieve()
 					.bodyToMono(Movie.class)
-					.block();
+					.block();*/
 
 			return new CatalogItem(movie.getMovieName(), "description", rating.getRating());
 		})
