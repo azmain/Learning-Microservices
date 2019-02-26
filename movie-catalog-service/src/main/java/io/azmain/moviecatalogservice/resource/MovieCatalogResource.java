@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import io.azmain.moviecatalogservice.models.CatalogItem;
 import io.azmain.moviecatalogservice.models.Movie;
 import io.azmain.moviecatalogservice.models.Rating;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @RestController
 @RequestMapping("/catalog")
@@ -25,6 +26,9 @@ public class MovieCatalogResource {
 	 */
 	@Autowired
 	private RestTemplate restTemplate;
+
+	@Autowired
+	private WebClient.Builder webClientBuilder;
 
 	@RequestMapping("/{userId}")
 	public List<CatalogItem> getCatalog(@PathVariable("userId") String userId){
@@ -56,7 +60,15 @@ public class MovieCatalogResource {
 			 * object with the given class
 			 * This call is synchronous but there's way to make these calls asynchronous
 			 */
-			Movie movie = restTemplate.getForObject("http://localhost:8082/movie/nishan", Movie.class);
+			//Movie movie = restTemplate.getForObject("http://localhost:8082/movie/nishan", Movie.class);
+
+			Movie movie = webClientBuilder.build()
+					.get()
+					.uri("http://localhost:8082/movie/"+rating.getMovieId())
+					.retrieve()
+					.bodyToMono(Movie.class)
+					.block();
+
 			return new CatalogItem(movie.getMovieName(), "description", rating.getRating());
 		})
 		.collect(Collectors.toList());
