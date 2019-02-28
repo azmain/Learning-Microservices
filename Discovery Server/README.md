@@ -19,3 +19,4 @@ eureka.client.fetch-registry=false
 ```
 * Add @EnableEurekaServer annotation above application class.
 * Start the application & go to the address.
+* You will see default spring eureka server. 

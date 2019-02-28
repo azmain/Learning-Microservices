@@ -50,7 +50,7 @@ public class MovieCatalogResource {
 		
 		//RestTemplate restTemplate = new RestTemplate(); // it is for calling web api programmatically
 		
-		UserRating ratings = restTemplate.getForObject("http://localhost:8083/ratingsdata/users/"+userId,UserRating.class);
+		UserRating ratings = restTemplate.getForObject("http://movie-data-service/ratingsdata/users/"+userId,UserRating.class);
 
 		
 		return ratings.getUserRating().stream().map(rating -> {
@@ -59,7 +59,7 @@ public class MovieCatalogResource {
 			 * object with the given class
 			 * This call is synchronous but there's way to make these calls asynchronous
 			 */
-			Movie movie = restTemplate.getForObject("http://localhost:8082/movie/"+userId, Movie.class);
+			Movie movie = restTemplate.getForObject("http://movie-info-service/movie/"+userId, Movie.class);
 
 			/*Web Client Builder Way
 			Movie movie = webClientBuilder.build()
